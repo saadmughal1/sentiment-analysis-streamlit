@@ -1,8 +1,6 @@
 import streamlit as st
-from transformers import pipeline
+from utils import classify_sentiment
 
-model_name = "cardiffnlp/twitter-roberta-base-sentiment"
-sentiment_pipeline = pipeline("sentiment-analysis", model=model_name)
 
 st.set_page_config(page_title="Sentiment Analysis", page_icon="💬", layout="centered")
 st.markdown(
@@ -53,23 +51,13 @@ data = st.text_area(
 st.markdown('<div class="button-container">', unsafe_allow_html=True)
 if st.button("Analyze Sentiment"):
     if data.strip():
-        result = sentiment_pipeline(data)
-        sentiment = result[0]["label"]
-        score = result[0]["score"]
-
-        if sentiment == "LABEL_0":
-            sentiment = "Negative"
-        elif sentiment == "LABEL_2":
-            sentiment = "Positive"
-        elif sentiment == "LABEL_1":
-            sentiment = "Neutral"
+        sentiment_result = classify_sentiment(data)
 
         st.markdown(
             f"""
             <div style="text-align: center; margin-top: 20px;">
                 <h2 style="color: #4CAF50;">Sentiment Analysis Result</h2>
-                <p style="font-size: 18px;">Sentiment: <b>{sentiment}</b></p>
-                <p style="font-size: 18px;">Confidence Score: <b>{score:.2f}</b></p>
+                <p style="font-size: 18px;">Sentiment: <b>{sentiment_result}</b></p>
             </div>
             """,
             unsafe_allow_html=True,
